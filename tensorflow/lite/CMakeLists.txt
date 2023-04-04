@@ -198,6 +198,11 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 if(CMAKE_SYSTEM_NAME MATCHES "Android")
   find_library(ANDROID_LOG_LIB log)
+
+  list(APPEND TFLITE_TARGET_DEPENDENCIES
+    -llog
+  )
+  set(BUILD_SHARED_LIBS ON)
 endif()
 # Build a list of source files to compile into the TF Lite library.
 populate_tflite_source_vars("." TFLITE_SRCS)
@@ -216,6 +221,8 @@ else()
 endif()
 if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Android")
   list(FILTER TFLITE_SRCS EXCLUDE REGEX ".*minimal_logging_android\\.cc$")
+else()
+  list(FILTER TFLITE_SRCS EXCLUDE REGEX ".*minimal_logging_default\\.cc$")
 endif()
 if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "iOS")
   list(FILTER TFLITE_SRCS EXCLUDE REGEX ".*minimal_logging_ios\\.cc$")
